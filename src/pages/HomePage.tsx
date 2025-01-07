@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Legend, CartesianGrid } from 'recharts';
-import { Home, Calendar, CheckSquare, User, Pencil, BookOpen, Coffee, Plus, Activity, Droplet, MoveHorizontal, List } from 'lucide-react';
+import { Home, Calendar, CheckSquare, User, Pencil, BookOpen, Coffee, Plus, Activity, Droplet, MoveHorizontal, List, RefreshCw } from 'lucide-react';
 
 const WellnessDashboard = () => {
+  const [isFabOpen, setIsFabOpen] = useState(false);
   const stressData = [
     { time: '6AM', actual: 20, predicted: 20 },
     { time: '9AM', actual: 30, predicted: 25 },
@@ -166,6 +167,38 @@ const WellnessDashboard = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Floating Action Button */}
+      <div className="fixed right-6 bottom-20 sm:right-8 sm:bottom-24">
+        {isFabOpen && (
+          <div className="absolute bottom-14 right-0 flex flex-col items-end gap-2">
+            <button
+              onClick={() => setIsFabOpen(false)}
+              className="bg-purple-600 text-white rounded-full p-3 shadow-lg hover:bg-purple-700 transition-colors"
+            >
+              <Calendar className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setIsFabOpen(false)}
+              className="bg-purple-600 text-white rounded-full p-3 shadow-lg hover:bg-purple-700 transition-colors"
+            >
+              <CheckSquare className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setIsFabOpen(false)}
+              className="bg-purple-600 text-white rounded-full p-3 shadow-lg hover:bg-purple-700 transition-colors"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+        <button
+          onClick={() => setIsFabOpen(!isFabOpen)}
+          className="bg-purple-600 text-white rounded-full p-4 shadow-lg hover:bg-purple-700 transition-colors"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Bottom Navigation */}
