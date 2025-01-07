@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Home, Calendar, ListTodo, User, Plus, Check, RefreshCw } from 'lucide-react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { Plus, Check, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Navigation from '../components/Navigation';
 
 const TaskInbox = () => {
   const [tasks, setTasks] = useState([
@@ -34,16 +35,23 @@ const TaskInbox = () => {
     }
   ]);
 
+  const [activeIcon, setActiveIcon] = useState('refresh'); // 'refresh' or 'menu'
   const navigate = useNavigate();
 
   const handleTaskComplete = (taskId) => {
-    // Show the tick and then remove the task after a short delay
     setTasks(tasks.map(task => 
       task.id === taskId ? { ...task, completed: true } : task
     ));
     setTimeout(() => {
       setTasks(tasks.filter(task => task.id !== taskId));
-    }, 200); // 200ms delay before removing the task
+    }, 200);
+  };
+
+  const handleIconClick = (iconType) => {
+    setActiveIcon(iconType);
+    if (iconType === 'refresh') {
+      navigate('/tasks');
+    }
   };
 
   return (
@@ -54,14 +62,18 @@ const TaskInbox = () => {
           <h1 className="text-2xl font-semibold">Inbox</h1>
           <div className="flex gap-2">
             <button 
-              onClick={() => navigate('/tasks')}
-              className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
+              onClick={() => handleIconClick('refresh')}
+              className={`p-2 rounded-full hover:bg-purple-100 ${
+                activeIcon === 'refresh' ? 'text-purple-600' : 'text-black'
+              }`}
             >
               <RefreshCw className="w-6 h-6" />
             </button>
             <button 
-              onClick={() => navigate('/tasks')}
-              className="p-2 text-black hover:bg-purple-100 rounded-full"
+              onClick={() => handleIconClick('menu')}
+              className={`p-2 rounded-full hover:bg-purple-100 ${
+                activeIcon === 'menu' ? 'text-purple-600' : 'text-black'
+              }`}
             >
               <svg 
                 className="w-6 h-6"
@@ -117,32 +129,7 @@ const TaskInbox = () => {
       </button>
 
       {/* Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t">
-        <div className="max-w-md mx-auto flex justify-around py-2">
-          <NavLink to="/" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <Home className="w-6 h-6" />
-            <span className="text-xs">Home</span>
-          </NavLink>
-          <NavLink to="/calendar" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <Calendar className="w-6 h-6" />
-            <span className="text-xs">Calendar</span>
-          </NavLink>
-          <div className="flex flex-col items-center text-purple-600">
-            <ListTodo className="w-6 h-6" />
-            <span className="text-xs">Tasks</span>
-          </div>
-          <NavLink to="/profile" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <User className="w-6 h-6" />
-            <span className="text-xs">Profile</span>
-          </NavLink>
-        </div>
-      </nav>
+      <Navigation />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Home, Calendar, CheckSquare, User, Plus, Edit, RefreshCw } from 'lucide-react';
+import { Plus, Edit, RefreshCw } from 'lucide-react';
 import HabitForm from '../components/HabitForm';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Navigation from '../components/Navigation';
 
 const TasksPage = () => {
   const [habits, setHabits] = useState([
@@ -45,7 +46,15 @@ const TasksPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState(null);
+  const [activeIcon, setActiveIcon] = useState('refresh'); // 'refresh' or 'menu'
   const navigate = useNavigate();
+
+  const handleIconClick = (iconType) => {
+    setActiveIcon(iconType);
+    if (iconType === 'refresh') {
+      navigate('/inbox');
+    }
+  };
 
   const CustomIcon = ({ type }) => {
     switch (type) {
@@ -111,14 +120,18 @@ const TasksPage = () => {
           <h1 className="text-2xl font-bold">Habits</h1>
           <div className="flex gap-2">
             <button 
-              onClick={() => navigate('/inbox')}
-              className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
+              onClick={() => handleIconClick('refresh')}
+              className={`p-2 rounded-full hover:bg-purple-100 ${
+                activeIcon === 'refresh' ? 'text-purple-600' : 'text-black'
+              }`}
             >
               <RefreshCw className="w-6 h-6" />
             </button>
             <button 
-              onClick={() => navigate('/inbox')}
-              className="p-2 text-black hover:bg-purple-100 rounded-full"
+              onClick={() => handleIconClick('menu')}
+              className={`p-2 rounded-full hover:bg-purple-100 ${
+                activeIcon === 'menu' ? 'text-purple-600' : 'text-black'
+              }`}
             >
               <svg 
                 className="w-6 h-6"
@@ -146,7 +159,6 @@ const TasksPage = () => {
               </div>
             </div>
             
-            {/* Pencil Icon - Top Right */}
             <button 
               onClick={() => handleEditHabit(habit)}
               className="absolute top-3 right-3 p-1 text-black hover:bg-purple-200 rounded-full"
@@ -154,7 +166,6 @@ const TasksPage = () => {
               <Edit className="w-4 h-4" />
             </button>
             
-            {/* Score - Bottom Right */}
             <span className={`absolute bottom-3 right-3 text-sm ${habit.score.includes('+') ? 'text-green-600' : 'text-red-600'}`}>
               {habit.score}
             </span>
@@ -171,12 +182,10 @@ const TasksPage = () => {
           }}
           onSubmit={(habit) => {
             if (selectedHabit) {
-              // Update existing habit
               setHabits(habits.map(h => 
                 h.id === selectedHabit.id ? { ...h, ...habit } : h
               ));
             } else {
-              // Add new habit
               handleAddHabit(habit);
             }
           }}
@@ -196,32 +205,7 @@ const TasksPage = () => {
       </button>
 
       {/* Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t">
-        <div className="max-w-md mx-auto flex justify-around py-2">
-          <NavLink to="/" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <Home className="w-6 h-6" />
-            <span className="text-xs">Home</span>
-          </NavLink>
-          <NavLink to="/calendar" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <Calendar className="w-6 h-6" />
-            <span className="text-xs">Calendar</span>
-          </NavLink>
-          <div className="flex flex-col items-center text-purple-600">
-            <CheckSquare className="w-6 h-6" />
-            <span className="text-xs">Tasks</span>
-          </div>
-          <NavLink to="/profile" className={({ isActive }) => 
-            `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-400'}`
-          }>
-            <User className="w-6 h-6" />
-            <span className="text-xs">Profile</span>
-          </NavLink>
-        </div>
-      </nav>
+      <Navigation />
     </div>
   );
 };
