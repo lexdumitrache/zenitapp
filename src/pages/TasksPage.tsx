@@ -1,8 +1,39 @@
 import React, { useState } from 'react';
 import { Plus, Edit, RefreshCw } from 'lucide-react';
 import HabitForm from '../components/HabitForm';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navigation from '../components/Navigation';
+
+const CustomIcon = ({ type }) => {
+  switch (type) {
+    case 'running':
+      return (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      );
+    case 'meditation':
+      return (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      );
+    case 'reading':
+      return (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      );
+    case 'yoga':
+      return (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
 
 const TasksPage = () => {
   const [habits, setHabits] = useState([
@@ -46,45 +77,18 @@ const TasksPage = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState(null);
-  const [activeIcon, setActiveIcon] = useState('refresh'); // 'refresh' or 'menu'
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleIconClick = (iconType) => {
-    setActiveIcon(iconType);
-    if (iconType === 'refresh') {
-      navigate('/inbox');
-    }
-  };
+  // Get current path and set active state
+  const currentPath = location.pathname;
+  const isTasksPage = currentPath === '/tasks';
+  const isInboxPage = currentPath === '/inbox';
 
-  const CustomIcon = ({ type }) => {
-    switch (type) {
-      case 'running':
-        return (
-          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        );
-      case 'meditation':
-        return (
-          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        );
-      case 'reading':
-        return (
-          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-        );
-      case 'yoga':
-        return (
-          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-        );
-      default:
-        return null;
-    }
+  const handleNavigation = (path) => {
+    navigate(path);
+    // Force immediate re-render
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const handleAddHabit = (newHabit) => {
@@ -120,17 +124,17 @@ const TasksPage = () => {
           <h1 className="text-2xl font-bold">Habits</h1>
           <div className="flex gap-2">
             <button 
-              onClick={() => handleIconClick('refresh')}
-              className={`p-2 rounded-full hover:bg-purple-100 ${
-                activeIcon === 'refresh' ? 'text-purple-600' : 'text-black'
+              onClick={() => handleNavigation('/tasks')}
+              className={`p-2 rounded-full hover:bg-purple-100 transition-colors ${
+                isTasksPage ? 'text-purple-600' : 'text-gray-500'
               }`}
             >
               <RefreshCw className="w-6 h-6" />
             </button>
             <button 
-              onClick={() => handleIconClick('menu')}
-              className={`p-2 rounded-full hover:bg-purple-100 ${
-                activeIcon === 'menu' ? 'text-purple-600' : 'text-black'
+              onClick={() => handleNavigation('/inbox')}
+              className={`p-2 rounded-full hover:bg-purple-100 transition-colors ${
+                isInboxPage ? 'text-purple-600' : 'text-gray-500'
               }`}
             >
               <svg 
@@ -163,7 +167,7 @@ const TasksPage = () => {
               onClick={() => handleEditHabit(habit)}
               className="absolute top-3 right-3 p-1 text-black hover:bg-purple-200 rounded-full"
             >
-              <Edit className="w-4 h-4" />
+              <Edit className="w-5 h-5" />
             </button>
             
             <span className={`absolute bottom-3 right-3 text-sm ${habit.score.includes('+') ? 'text-green-600' : 'text-red-600'}`}>
