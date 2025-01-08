@@ -23,11 +23,11 @@ const Navigation = () => {
           <CheckSquare className="w-6 h-6 sm:w-7 sm:h-7" />
           <span className="text-xs sm:text-sm">Tasks</span>
         </NavLink>
-        <NavLink to="/profile" className={({ isActive }) => 
+        <NavLink to="/health-report" className={({ isActive }) => 
           `flex flex-col items-center ${isActive ? 'text-purple-600' : 'text-gray-500'}`
         }>
           <User className="w-6 h-6 sm:w-7 sm:h-7" />
-          <span className="text-xs sm:text-sm">Profile</span>
+          <span className="text-xs sm:text-sm">Health Report</span>
         </NavLink>
       </div>
     </nav>

@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import TasksPage from './pages/TasksPage';
 import InboxPage from './pages/InboxPage';
-import ProfilePage from './pages/ProfilePage';
+import HealthReportPage from './pages/ProfilePage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/inbox" element={<InboxPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/health-report" element={<HealthReportPage />} />
         </Routes>
         <Navigation />
       </div>
