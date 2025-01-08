@@ -1,14 +1,16 @@
 import React from 'react';
-import { Home, Calendar, ListTodo, User, Heart, Moon, Brain, Activity, Droplet, BookOpen } from 'lucide-react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { Home, Calendar, ListTodo, User, Heart, Moon, Brain, Activity, Droplet, BookOpen, Battery } from 'lucide-react';
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 const HealthReport = () => {
   const stressData = [
-    { value: 55 },
-    { value: 58 },
-    { value: 52 },
-    { value: 56 },
-    { value: 50 },
+    { day: 'Mon', value: 55 },
+    { day: 'Tue', value: 58 },
+    { day: 'Wed', value: 52 },
+    { day: 'Thu', value: 56 },
+    { day: 'Fri', value: 50 },
+    { day: 'Sat', value: 48 },
+    { day: 'Sun', value: 45 }
   ];
 
   const activityData = [
@@ -58,6 +60,19 @@ const HealthReport = () => {
           <div className="h-24">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={stressData}>
+                <XAxis 
+                  dataKey="day" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#666' }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: '#666' }}
+                  domain={[0, 100]}
+                  ticks={[0, 20, 40, 60, 80, 100]}
+                />
                 <Line
                   type="monotone"
                   dataKey="value"
@@ -86,9 +101,7 @@ const HealthReport = () => {
           <div className="bg-green-100 p-4 rounded-2xl">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Recovery</span>
-              <svg className="w-4 h-4 text-gray-600" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
-              </svg>
+              <Battery size={16} className="text-gray-600" />
             </div>
             <div className="mt-2">
               <div className="text-2xl font-bold text-gray-900">2.5h</div>
@@ -144,6 +157,16 @@ const HealthReport = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Weekly Summary */}
+        <div className="p-4 bg-purple-50 rounded-2xl mt-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Weekly Summary</h3>
+          <p className="text-gray-600">
+            This week's most stressful activity was studying, with a total duration of 180 minutes 
+            and an average stress score level of 83. Remember to take regular breaks and practice 
+            mindfulness techniques to manage stress effectively.
+          </p>
         </div>
       </div>
     </div>
